@@ -18,3 +18,14 @@ hdfs-mount: bin
 clean:
 	rm -f hdfs-mount _mock_*.go
 
+make_in_docker:
+	svc=
+	mkdir -p build
+	docker run --rm \
+		-v `pwd`:/app \
+		-e CGO_ENABLED=$(CGO_ENABLED) \
+		-e GOOS=$(GOOS) \
+		-e GOARCH=$(GOARCH) \
+		-e GOARM=$(GOARM) \
+		golang:1.14.4-alpine \
+		/bin/sh -c "cd /app && go build -mod=vendor -ldflags '-s -w' -o build/hdfs-mount"
